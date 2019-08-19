@@ -1,0 +1,14 @@
+# Application server configuration
+logging.level.=DEBUG
+server.port=
+spring.security.user.name=
+spring.security.user.password=
+
+# Local mongodb configuration.
+spring.data.mongodb.host=
+spring.data.mongodb.port=
+spring.data.mongodb.database=
+
+# Logging configuration.
+logging.level.com.assignment.springboot.mongo=DEBUG
+logging.pattern.console= %d{yyyy-MM-dd HH:mm:ss} - %msg%n

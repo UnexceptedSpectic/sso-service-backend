@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id "org.springframework.boot" version "2.3.4.RELEASE"
+    id "io.spring.dependency-management" version "1.0.10.RELEASE"
+}
+
+bootJar {
+    mainClassName = "dev.blep.accounts.Application"
+} 
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+
+    // log4j
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    implementation 'org.projectlombok:lombok:1.18.12'
+    implementation 'org.apache.logging.log4j:log4j-api:2.13.3'
+    implementation 'org.apache.logging.log4j:log4j-core:2.13.3'
+
+    // spring
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    // mongodb
+    implementation 'org.mongodb:bson:4.1.0'
+    implementation 'org.mongodb:mongodb-driver-core:4.1.0'
+    implementation 'org.mongodb:mongodb-driver-sync:4.1.0'
+
+    //etc
+    implementation 'org.json:json:20200518'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.2'
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'javax.xml:webservices-api:2.1-b16'
+
+    // tests
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
+
+sourceSets {
+    main.java.srcDirs = ['src']
+    main.resources.srcDirs = ['resources']
+    test.java.srcDirs = ['test']
+    test.resources.srcDirs = ['resources/test']
+}
+
+compileJava.inputs.files(processResources)
