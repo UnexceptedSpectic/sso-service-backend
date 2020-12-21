@@ -1,6 +1,11 @@
 package dev.blep.accounts.entities;
 
 import lombok.Data;
+import org.bson.Document;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents the model entity for an account.
@@ -8,10 +13,15 @@ import lombok.Data;
 @Data
 public class AccountEntity {
 
+    public static class Types {
+        public static final String USER = "user";
+        public static final String DEVELOPER = "developer";
+    };
+
     private String email;
     private String username;
     private String password;
-    private String jwt;
+    private String type = Types.USER;
 
     // Required to map requestBody to this entity
     public AccountEntity() {
@@ -24,10 +34,11 @@ public class AccountEntity {
      * @param username
      * @param password
      */
-    public AccountEntity(String email, String username, String password) {
+    public AccountEntity(String email, String username, String password, String type) {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.type = type;
     }
 
     public String getEmail() {
@@ -54,11 +65,5 @@ public class AccountEntity {
         this.password = password;
     }
 
-    public String getJwt() {
-        return jwt;
-    }
-
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
-    }
+    public String getType() { return type; }
 }
