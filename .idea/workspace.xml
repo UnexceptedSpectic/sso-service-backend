@@ -10,12 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0cbe8663-82dc-4b18-acdf-9ef01847fce9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/application.properties.template" beforeDir="false" afterPath="$PROJECT_DIR$/resources/application.properties.template" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dev/blep/accounts/repositories/AccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/dev/blep/accounts/repositories/AccountRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,7 +222,7 @@
       <workItem from="1608408770909" duration="63000" />
       <workItem from="1608413077204" duration="649000" />
       <workItem from="1608753971461" duration="3959000" />
-      <workItem from="1614898905822" duration="16520000" />
+      <workItem from="1614898905822" duration="17446000" />
     </task>
     <servers />
   </component>

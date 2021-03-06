@@ -1,45 +1,131 @@
 # Spring single sign-on (SSO) service
 
-## Components
+## Architecture
 
-- This repository constitutes the API of this service.
-- Access the frontend web app [here](http://auth.libredelibre.com/) and its sourcecode [here](https://github.com/UnexceptedSpectic/sso-frontend).
-- Try a web app implementing this service [here](http://budget.libredelibre.com/).
-- Confirm that [another web app](http://demo.libredelibre.com/) that is part of the same SSO suite as the one listed above responds to the sign in state of the suite. *Note that the webapps are hosted on different boxes.
+![architecture-diagram](https://github.com/UnexceptedSpectic/sso-service-backend/blob/main/arch.svg?raw=true "Architecture Diagram")
 
-## Implementation guidelines
+## Usage
 
-1. Sign in, sign out, and jwt renewal operations must be completed via the web interface.
-2. Only jwt verification can be done away from the SSO webapp.
-3. Apps need to check to ensure their jwt isn't expired. When it does, they should redirect to the SSO web app to sign in.
-4. Accessing the SSO web app on a signed in state will return all of the unexpired jwts representing logged in states for all users of a particular SSO suite. It is up to the developer to determine which jwt/account should be used with the app.
+It is recommended that developers use the front end UI associated with this service available [here](https://github.com/UnexceptedSpectic/sso-frontend). In such a case, the developer need only set up mongoDB, register for a developer account, and create a SSO suite.
 
-### SSO web app endpoints
+### MongoDB
+Install mongodb and configure user permissions e.g.  
+`use admin;`  
+`db.createUser(
+{
+user: "admin",
+pwd: passwordPrompt(),
+roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ]
+}
+);`
 
-#### Login
+`use sso;`  
+`db.createUser(
+{
+user: "sso",
+pwd: passwordPrompt(),
+roles: [ { role: "readWrite", db: "sso" } ]
+}
+);`
 
-Path: `/login`
+Enable authorization in the mongo configuration file and restart the mongod service. See more detailed instructions [here](https://docs.mongodb.com/manual/tutorial/enable-authentication/).  
 
-Query params:
-- `ssoSuiteId`
-- `redirectUrl`
+Modify the `resources/application.properties.template` config file and rename it to `application.properties`.
 
-#### Jwt renewal
+### API Endpoints
+If the SSO web app is used, developers should only utilize the `/account/authenticate`, of those listed below.
 
-Path: `/login`
+#### Register an account
+Endpoint:  
+`/account/create`
 
-Query params:
-- `redirectUrl`
-- `jwt`
+Sample reqeust body:  
+`{
+"username": "user1",
+"email": "user1@email.com",
+"password": "A)1ansmfdlasdf"
+}`
 
-Query params:
-- `ssoSuiteId`
-- `redirectUrl`
+- A password must have at least 8 characters, one capital letter, one symbol, and one number.
+- Developers should specify that their account is of that type by adding the below:  
+`type: developer`. Note the `apiKey` returned in the response body. An existing account can be changed to developer by using the `/account/changeType` endpoint.
 
-#### Logout
+#### Modify account type
 
-Path: `/logout`
+Endpoint:  
+`/account/changeType`
 
-Query params:
-- `redirectUrl`
-- `jwt`
+Sample request body:  
+`{
+"username": "user1",
+"password": "A)1ansmfdlasdf",
+"type": "developer"
+}`
+
+Types:   
+- `"user"` (default)
+- `"developer"`  
+ 
+
+ Accounts changed to `"developer"` are provided with an `apiKey` in a successful response.
+
+#### Register a SSO suite
+
+Endpoint:  
+`/sso-suite/create`
+
+Sample request body:  
+`{
+"username": "user1",
+"password": "A)1ansmfdlasdf",
+"apiKey": "60417dbf2e99d717018b69c2",
+"ssoSuiteName": "google"
+}`
+
+- The account creating a SSO suite must be of type `"developer"`; an `apiKey` is required.
+- Save the returned `ssoSuiteId`.
+
+#### Sign in/authenticate an account
+
+This endpoint can be used to sign users into a SSO suite or to validate that a user is still signed in to one. In the first case, a new JWT is generated; in the second, if the JWT has not expired, it is returned. A user may be simultaneously signed into multiple SSO suites, the service providing and storing a JWT for each.
+
+Endpoint:  
+`/account/authenticate`  
+
+Sample request body:  
+`{
+"username": "user1",
+"password": "A)1ansmfdlasdf",
+"ssoSuiteId": "604186342e99d717018b69c4"
+}`
+
+- Users are authenticated against a specific SSO suite.
+- A successful response will return a `jwt` that can be used in place of username/email and password to authenticate in the future.
+
+#### Sign out an account
+
+Clear the JWT associated with a particular SSO suite, to sign an account out.
+
+Endpoint:  
+`/account/signOut`  
+
+Sample request body:  
+`{
+"jwt": "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzc29TdWl0ZUlkIjoiNjA0MTg2MzQyZTk5ZDcxNzAxOGI2OWM0IiwidXNlcklkIjoidGVzMjM0dCIsImV4cCI6MTYxNDkxNzcwMH0.ciaBuU2ImJlLS571oroif8CIeP5pOeDz-6746rHvkHZh1oTsbaLYn620AFsawOBGFFrIeS1JC28ksSzfAZ8lmw"
+}`
+
+### JWTs
+
+#### Payload
+
+Example:
+`{
+"ssoSuiteId": "604186342e99d717018b69c4",
+"userId": "tes234t",
+"exp": 1614917700
+}`
+
+Where `userId` may be either the `username` or `email` of an account.
+
+## TODO
+- Store user authorization scope in database and include it in JWT payloads.
